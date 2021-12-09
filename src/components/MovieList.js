@@ -12,7 +12,7 @@ function MovieList(props) {
     filmsGenre = films
   }
 
-  filmsGenre = filmsGenre.sort((a, b) => b.ratingAverage - a.ratingAverage)
+  filmsGenre = filmsGenre.sort((a, b) => b.reatingAverage - a.reatingAverage)
   filmsGenre = filmsGenre.slice(0, 7)
   return (
     <>
