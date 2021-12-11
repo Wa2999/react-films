@@ -1,7 +1,10 @@
+import { useContext } from "react"
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap"
 import { Link } from "react-router-dom"
+import FilmsContext from "../utils/FilmsContext"
 
 function NavbarItem() {
+  const { logout } = useContext(FilmsContext)
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
@@ -32,14 +35,25 @@ function NavbarItem() {
               </Link>
             </NavDropdown>
           </Nav>
-          <Nav className="ms-auto">
-            <Link className="nav-link" to="/login">
-              Login
-            </Link>
-            <Link className="nav-link" to="/signup">
-              Sign Up
-            </Link>
-          </Nav>
+          {localStorage.tokenFilms ? (
+            <Nav className="ms-auto">
+              <Link className="nav-link" to="/profile">
+                Profile
+              </Link>
+              <Link className="nav-link" to="/" onClick={logout}>
+                Logout
+              </Link>
+            </Nav>
+          ) : (
+            <Nav className="ms-auto">
+              <Link className="nav-link" to="/login">
+                Login
+              </Link>
+              <Link className="nav-link" to="/signup">
+                Sign Up
+              </Link>
+            </Nav>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>
