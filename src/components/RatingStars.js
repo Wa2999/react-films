@@ -13,11 +13,11 @@ function RatingStars(props) {
       overlay={
         <Tooltip>
           <div style={{ padding: 15 }} onMouseLeave={() => setFill(0)}>
-            <OneStar fill={fill} setFill={setFill} starNumber={1} filmId={filmId} />
-            <OneStar fill={fill} setFill={setFill} starNumber={2} filmId={filmId} />
-            <OneStar fill={fill} setFill={setFill} starNumber={3} filmId={filmId} />
-            <OneStar fill={fill} setFill={setFill} starNumber={4} filmId={filmId} />
-            <OneStar fill={fill} setFill={setFill} starNumber={5} filmId={filmId} />
+            <OneStar fill={fill} setFill={setFill} starNumber={1} filmId={filmId} setShow={setShow} />
+            <OneStar fill={fill} setFill={setFill} starNumber={2} filmId={filmId} setShow={setShow} />
+            <OneStar fill={fill} setFill={setFill} starNumber={3} filmId={filmId} setShow={setShow} />
+            <OneStar fill={fill} setFill={setFill} starNumber={4} filmId={filmId} setShow={setShow} />
+            <OneStar fill={fill} setFill={setFill} starNumber={5} filmId={filmId} setShow={setShow} />
           </div>
         </Tooltip>
       }

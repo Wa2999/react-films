@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { Form, Col, Row, Button, Alert } from "react-bootstrap"
+import { Form, Col, Row, Button } from "react-bootstrap"
 import FilmsContext from "../utils/FilmsContext"
 
 function SignUp() {

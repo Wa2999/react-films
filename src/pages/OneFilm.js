@@ -1,19 +1,22 @@
 import { useContext } from "react"
-import { Button, Card, Col, Image, OverlayTrigger, Row, Tooltip } from "react-bootstrap"
+import { Button, Card, Col, Image, Row } from "react-bootstrap"
 import { useParams } from "react-router"
 import { Link } from "react-router-dom"
 import FilmsContext from "../utils/FilmsContext"
-import { AiFillStar, AiOutlineStar } from "react-icons/ai"
-import { toast } from "react-toastify"
+import { MdFavorite, MdOutlineFavoriteBorder } from "react-icons/md"
 import RatingStars from "../components/RatingStars"
+import AddComment from "../components/AddComment"
 
 function OneFilm() {
   const { filmId } = useParams()
-  const { films } = useContext(FilmsContext)
+  const { films, likeFilm, profile } = useContext(FilmsContext)
 
-  if (films.length === 0) return <h1>Loading...</h1>
+  if (!profile || films.length === 0) return <h1>Loading...</h1>
 
   const film = films.find(film => film._id === filmId)
+
+  const liked = film.likes.includes(profile._id)
+
   return (
     <>
       <Row
@@ -40,10 +43,15 @@ function OneFilm() {
           <h3>Rating</h3>
           <Row className="d-flex align-items-center">
             <Col md="2">
-              <span>{film.ratingAverage} / 5</span>
+              <span>{film.ratingAverage.toFixed(1)} / 5</span>
+              <span className="ms-2">({film.ratings.length})</span>
             </Col>
+
             <Col>
               <RatingStars filmId={film._id} />
+              <Button variant="dark" className="ms-3" onClick={() => likeFilm(film._id)}>
+                {liked ? <MdFavorite /> : <MdOutlineFavoriteBorder />}
+              </Button>
             </Col>
           </Row>
           <h3>Overview</h3>
@@ -79,27 +87,34 @@ function OneFilm() {
           </Col>
         ))}
       </Row>
-      <Row className="mt-5">
-        <h3>Comments</h3>
+      {localStorage.tokenFilms ? (
+        <>
+          <Row className="mt-5">
+            <h3>Comments</h3>
 
-        {film.comments.map(comment => (
-          <Card style={{ margin: 20, maxWidth: 1100 }}>
-            <Row>
-              <Row style={{ display: "flex", alignItems: "center" }}>
-                <Col md="1">
-                  <Image src={comment.owner.avatar} width="80px" roundedCircle />
-                </Col>
-                <Col>
-                  {comment.owner.firstName} {comment.owner.lastName}
-                </Col>
-              </Row>
-              <Row>
-                <Col md={{ offset: 1 }}>{comment.comment}</Col>
-              </Row>
-            </Row>
-          </Card>
-        ))}
-      </Row>
+            {film.comments.map(comment => (
+              <Card style={{ margin: 20, maxWidth: 1100 }}>
+                <Row>
+                  <Row style={{ display: "flex", alignItems: "center" }}>
+                    <Col md="1">
+                      <Image src={comment.owner.avatar} width="80px" roundedCircle />
+                    </Col>
+                    <Col>
+                      {comment.owner.firstName} {comment.owner.lastName}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={{ offset: 1 }}>{comment.comment}</Col>
+                  </Row>
+                </Row>
+              </Card>
+            ))}
+          </Row>
+          <Row>
+            <AddComment filmId={film._id} />
+          </Row>
+        </>
+      ) : null}
     </>
   )
 }

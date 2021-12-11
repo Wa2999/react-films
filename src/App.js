@@ -10,9 +10,15 @@ import Signup from "./pages/Signup"
 import Login from "./pages/Login"
 import Profile from "./pages/Profile"
 import { toast, ToastContainer } from "react-toastify"
+import OneCast from "./pages/OneCast"
+import AllFilms from "./pages/AllFilms"
+import AllActors from "./pages/AllActors"
+import AllDirectors from "./pages/AllDirectors"
 
 function App() {
   const [films, setFilms] = useState([])
+  const [actors, setActors] = useState([])
+  const [directors, setDirectors] = useState([])
   const [profile, setProfile] = useState(null)
   const navigate = useNavigate()
 
@@ -30,9 +36,16 @@ function App() {
     setProfile(response.data)
   }
 
+  const getCasts = async () => {
+    const response = await axios.get("http://localhost:5000/api/casts")
+    setActors(response.data.filter(cast => cast.type === "Actor"))
+    setDirectors(response.data.filter(cast => cast.type === "Director"))
+  }
+
   useEffect(() => {
     getFilms()
     if (localStorage.tokenFilms) getProfile()
+    getCasts()
   }, [])
 
   const signup = async e => {
@@ -70,11 +83,12 @@ function App() {
       const token = response.data
       localStorage.tokenFilms = token
 
+      getProfile()
       console.log("login success")
 
       navigate("/")
     } catch (error) {
-      if (error.response) console.log(error.response.data)
+      if (error.response) toast.error(error.response.data)
       else console.log(error)
     }
   }
@@ -102,6 +116,60 @@ function App() {
     }
   }
 
+  const filmSearch = e => {
+    e.preventDefault()
+    const form = e.target
+    const searchText = form.elements.filmSearch.value
+
+    const filmFound = films.find(film => film.title === searchText)
+    if (filmFound) return navigate(`/film/${filmFound._id}`)
+
+    const actorFound = actors.find(actor => `${actor.firstName} ${actor.lastName}` === searchText)
+    if (actorFound) return navigate(`/actor/${actorFound._id}`)
+
+    const directorFound = directors.find(director => `${director.firstName} ${director.lastName}` === searchText)
+    if (directorFound) return navigate(`/director/${directorFound._id}`)
+
+    toast.error("not found")
+  }
+
+  const likeFilm = async filmId => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/films/${filmId}/likes`, {
+        headers: {
+          Authorization: localStorage.tokenFilms,
+        },
+      })
+      getFilms()
+      toast.success(response.data)
+    } catch (error) {
+      if (error.response) toast.error(error.response.data)
+      else console.log(error)
+    }
+  }
+
+  const addComment = async (e, filmId) => {
+    e.preventDefault()
+    try {
+      const form = e.target
+      const commentBody = {
+        comment: form.elements.comment.value,
+      }
+
+      form.reset()
+      await axios.post(`http://localhost:5000/api/films/${filmId}/comments`, commentBody, {
+        headers: {
+          Authorization: localStorage.tokenFilms,
+        },
+      })
+      getFilms()
+      toast.success("Comment added")
+    } catch (error) {
+      if (error.response) toast.error(error.response.data)
+      else console.log(error)
+    }
+  }
+
   const store = {
     films,
     signup,
@@ -109,6 +177,11 @@ function App() {
     logout,
     profile,
     addRating,
+    filmSearch,
+    likeFilm,
+    addComment,
+    actors,
+    directors,
   }
 
   return (
@@ -119,9 +192,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/film/:filmId" element={<OneFilm />} />
+        <Route path="/actor/:actorId" element={<OneCast type="actor" />} />
+        <Route path="/director/:directorId" element={<OneCast type="director" />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/films" element={<AllFilms />} />
+        <Route path="/actors" element={<AllActors />} />
+        <Route path="/directors" element={<AllDirectors />} />
       </Routes>
     </FilmsContext.Provider>
   )

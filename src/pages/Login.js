@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { Form, Col, Row, Button, Alert } from "react-bootstrap"
+import { Form, Col, Row, Button } from "react-bootstrap"
 import FilmsContext from "../utils/FilmsContext"
 
 function Login() {
@@ -26,7 +26,6 @@ function Login() {
           </Col>
         </Form.Group>
 
-        <Row>{/* <Col md="8">{errorLogin !== null ? <Alert variant="danger">{errorLogin}</Alert> : null}</Col> */}</Row>
         <Form.Group as={Row} className="my-4">
           <Col md={{ span: 10, offset: 2 }}>
             <Button type="submit">Login</Button>

@@ -23,7 +23,7 @@ function MovieList(props) {
       <Row>
         {filmsGenre.map(film => (
           <Col key={film._id}>
-            <Card border="light">
+            <Card border="light" style={{ maxWidth: "200px" }}>
               <Link to={`/film/${film._id}`}>
                 <Card.Img variant="top" src={film.poster} height="220px" style={{ borderRadius: "10px" }} />
               </Link>

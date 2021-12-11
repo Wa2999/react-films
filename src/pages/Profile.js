@@ -1,6 +1,7 @@
 import { useContext } from "react"
-import { Card, Col, Container, Row } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Col, Container, Row } from "react-bootstrap"
+
+import MovieItem from "../components/MovieItem"
 import FilmsContext from "../utils/FilmsContext"
 
 function Profile() {
@@ -32,19 +33,7 @@ function Profile() {
       <Row className="mt-5">
         <h3>Favourite movies</h3>
         {profile.likes.map(film => (
-          <Col key={film._id} md="2">
-            <Card border="light" style={{ maxWidth: "200px" }}>
-              <Link to={`/film/${film._id}`}>
-                <Card.Img variant="top" src={film.poster} height="220px" style={{ borderRadius: "10px" }} />
-              </Link>
-              <Card.Body>
-                <Link to={`/film/${film._id}`} className="text-black" style={{ textDecoration: "none" }}>
-                  <Card.Title>{film.title}</Card.Title>
-                </Link>
-                <Card.Text className="text-muted">{film.description}</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
+          <MovieItem film={film} key={film._id} />
         ))}
       </Row>
     </Container>
